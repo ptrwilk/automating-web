@@ -22,12 +22,21 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/automating-web:dev
+          tags: zenobiusztasak/automating-web:dev
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
 
     steps:
-      - name: Create directory on VM
-        run: sshpass -p ${{ secrets.VM_PASSWORD }} ssh ${{ secrets.VM_LOGIN }}@${{ secrets.VM_IP }} "mkdir -p /home/automating-web"
+      - name: Execute remote SSH commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: root
+          password: ${{ secrets.VM_PASSWORD }}
+          port: 22
+          script: |
+            cd ~/automating-web
+            docker pull zenobiusztasak/automating-web:dev
+            docker compose stop
+            docker compose up -d

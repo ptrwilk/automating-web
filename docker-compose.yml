@@ -1,0 +1,9 @@
+services:
+  automating-web:
+    image: zenobiusztasak/automating-web:dev
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    container_name: automating-web
